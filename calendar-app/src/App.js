@@ -1,20 +1,26 @@
-import logo from './logo.svg';
 import './App.css';
 import Calendar from 'react-calendar'
+import 'react-calendar/dist/Calendar.css';
+
 
 function App() {
+
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
+        
         <p>
           This is my Calendar
         </p>
-        <h3>
+        <h1>
           Calendar
-        </h3>
-        <Calendar />
+        </h1>
+        <Calendar/>
+         
       </header>
+
+
+      
     </div>
   );
 }
