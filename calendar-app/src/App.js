@@ -1,5 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
+import Calendar from 'react-calendar'
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
         <h3>
           Calendar
         </h3>
+        <Calendar />
       </header>
     </div>
   );
