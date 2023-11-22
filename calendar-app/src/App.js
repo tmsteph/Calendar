@@ -23,21 +23,37 @@ function App() {
     }
   };
 
-  const formattedSelectedDate = selectedDate.toISOString().split('T')[0];
-  const events = dateEvents[formattedSelectedDate] || [];
+  const formatDate = (date) => {
+    return new Intl.DateTimeFormat('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    }).format(date);
+  };
+
+  const formattedSelectedDate = formatDate(selectedDate);
+  const events = dateEvents[selectedDate.toISOString().split('T')[0]] || [];
 
   return (
     <div className="App">
       <header className="App-header">
         <p>This is my Calendar</p>
         <h1>Calendar</h1>
-        <Calendar onChange={handleDateChange} value={selectedDate} />
-        <button onClick={handleNewEvent}>New Event</button>
-        <div>
-          <h2>Events on {formattedSelectedDate}</h2>
-          {events.map((event, index) => (
-            <div key={index}>{event.title}</div>
-          ))}
+        <div className="calendar-container">
+          <Calendar onChange={handleDateChange} value={selectedDate} />
+          <div className="events-container">
+            <button onClick={handleNewEvent} className="new-event-button">
+              New Event
+            </button>
+            <h2>Events on {formattedSelectedDate}</h2>
+            {events.length > 0 ? (
+              events.map((event, index) => (
+                <div key={index}>{event.title}</div>
+              ))
+            ) : (
+              <p>No events</p>
+            )}
+          </div>
         </div>
       </header>
     </div>
