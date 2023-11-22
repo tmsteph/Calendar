@@ -1,17 +1,23 @@
-import firebase from 'firebase/app';
-import 'firebase/firestore';
+import { initializeApp } from 'firebase/app';
+import { getFirestore } from 'firebase/firestore';
 
 const firebaseConfig = {
-  apiKey: "your_api_key",
-  authDomain: "your_project_id.firebaseapp.com",
-  projectId: "your_project_id",
-  storageBucket: "your_project_id.appspot.com",
-  messagingSenderId: "your_messaging_sender_id",
-  appId: "your_app_id"
+    apiKey: "AIzaSyARmPvH6teCYF7Idq8giEiHafTWyoVINZQ",
+  
+    authDomain: "calendar-b8a3b.firebaseapp.com",
+  
+    projectId: "calendar-b8a3b",
+  
+    storageBucket: "calendar-b8a3b.appspot.com",
+  
+    messagingSenderId: "783178412230",
+  
+    appId: "1:783178412230:web:2f62ea5443c1ac3d87a7c7",
+  
+    measurementId: "G-FM5R3ELDXG" 
 };
 
-firebase.initializeApp(firebaseConfig);
-
-const db = firebase.firestore();
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
 export { db };
