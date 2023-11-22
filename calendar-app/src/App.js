@@ -1,69 +1,38 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import './App.css';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
-import { db } from './firebaseConfig'; // Import your Firebase configuration
 
 function App() {
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [dateEvents, setDateEvents] = useState([]);
-  const [eventTitle, setEventTitle] = useState('');
+  const [dateEvents, setDateEvents] = useState({}); // Object to store events
 
   const handleDateChange = (value) => {
     setSelectedDate(value);
   };
 
   const handleNewEvent = () => {
-    if (eventTitle.trim() === '') {
-      alert('Event title cannot be empty.');
-      return;
+    const eventTitle = prompt('Enter Event Title');
+    if (eventTitle) {
+      const formattedDate = selectedDate.toISOString().split('T')[0];
+      const events = dateEvents[formattedDate] || [];
+      setDateEvents({
+        ...dateEvents,
+        [formattedDate]: [...events, { title: eventTitle }]
+      });
     }
-
-    const formattedDate = selectedDate.toISOString().split('T')[0];
-    const newEvent = { title: eventTitle };
-
-    // Update the event in Firebase Firestore
-    db.collection('events')
-      .doc(formattedDate)
-      .set({ title: eventTitle })
-      .then(() => {
-        // Update the local state with the new event
-        setDateEvents([...dateEvents, newEvent]);
-        setEventTitle('');
-      })
-      .catch((error) => {
-        console.error('Error adding document: ', error);
-      });
   };
-
-  useEffect(() => {
-    // Load events from Firebase Firestore when the component mounts
-    const formattedDate = selectedDate.toISOString().split('T')[0];
-    const eventsRef = db.collection('events').doc(formattedDate);
-
-    eventsRef
-      .get()
-      .then((doc) => {
-        if (doc.exists) {
-          setDateEvents([doc.data()]);
-        } else {
-          setDateEvents([]);
-        }
-      })
-      .catch((error) => {
-        console.error('Error getting document:', error);
-      });
-  }, [selectedDate]);
 
   const formatDate = (date) => {
     return new Intl.DateTimeFormat('en-US', {
       year: 'numeric',
       month: 'long',
-      day: 'numeric',
+      day: 'numeric'
     }).format(date);
   };
 
   const formattedSelectedDate = formatDate(selectedDate);
+  const events = dateEvents[selectedDate.toISOString().split('T')[0]] || [];
 
   return (
     <div className="App">
@@ -73,23 +42,13 @@ function App() {
         <div className="calendar-container">
           <Calendar onChange={handleDateChange} value={selectedDate} />
           <div className="events-container">
-            <div className="new-event">
-              <input
-                type="text"
-                placeholder="Enter Event Title"
-                value={eventTitle}
-                onChange={(e) => setEventTitle(e.target.value)}
-              />
-              <button onClick={handleNewEvent} className="new-event-button">
-                New Event
-              </button>
-            </div>
+            <button onClick={handleNewEvent} className="new-event-button">
+              New Event
+            </button>
             <h2>Events on {formattedSelectedDate}</h2>
-            {dateEvents.length > 0 ? (
-              dateEvents.map((event, index) => (
-                <div key={index} className="event">
-                  {event.title}
-                </div>
+            {events.length > 0 ? (
+              events.map((event, index) => (
+                <div key={index}>{event.title}</div>
               ))
             ) : (
               <p>No events</p>
